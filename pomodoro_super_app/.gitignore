@@ -1,0 +1,15 @@
+.DS_Store
+.dart_tool/
+.packages
+.pub-cache/
+build/
+**/GeneratedPluginRegistrant.*
+android/.gradle/
+android/app/key.properties
+ios/Pods/
+linux/
+macos/
+windows/
+web/.dart_tool/
+**/*.iml
+.idea/
