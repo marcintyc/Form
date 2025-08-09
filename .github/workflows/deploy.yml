@@ -3,7 +3,7 @@ name: Deploy Flutter app to GitHub Pages
 on:
   push:
     branches:
-      - cursor/build-a-flutter-pomodoro-super-app-c404  # Upewnij się, że to poprawny branch
+      - master  # Upewnij się, że to poprawny branch
   workflow_dispatch:
 
 jobs:
