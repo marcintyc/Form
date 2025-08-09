@@ -1,39 +1,16 @@
-name: Deploy Flutter app to GitHub Pages
+name: Gh-Pages
 
 on:
   push:
-    branches:
-      - master  # Upewnij się, że to poprawny branch
-  workflow_dispatch:
+    branches: [master]
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Najnowsza wersja akcji
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v2 # Only works with v2
+      - uses: subosito/flutter-action@v1
+      - uses: bluefireteam/flutter-gh-pages@v7
         with:
-          flutter-version: '3.x'  # Możesz podać konkretną wersję, np. '3.22.2'
-          channel: 'stable'
-          cache: true  # Przyspiesza budowanie
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Build web app
-        run: flutter build web --release --base-href /${{ github.event.repository.name }}/
-
-      - name: List build directory (debug)
-        run: ls -la ./build/web  # Pomaga zweryfikować, czy build się udał
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4  # Najnowsza wersja akcji
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          keep_files: false
-          force_orphan: true
+          baseHref: /Responsive-Blog-Theme-using-Flutter/
