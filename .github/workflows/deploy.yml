@@ -1,16 +1,34 @@
-name: Gh-Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [master]
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2 # Only works with v2
-      - uses: subosito/flutter-action@v1
-      - uses: bluefireteam/flutter-gh-pages@v7
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          baseHref: /Responsive-Blog-Theme-using-Flutter/
+          flutter-version: '3.22.2'  # Użyj konkretnej wersji Fluttera (sprawdź, która pasuje do Twojego projektu)
+          channel: 'stable'
+          cache: true  # Przyspiesza budowanie przez cache'owanie zależności
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build web app
+        run: flutter build web --release --base-href /Responsive-Blog-Theme-using-Flutter/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          keep_files: false
+          force_orphan: true
