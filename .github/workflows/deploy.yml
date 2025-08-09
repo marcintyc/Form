@@ -15,9 +15,15 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'  # Użyj konkretnej wersji Fluttera (sprawdź, która pasuje do Twojego projektu)
+          flutter-version: '3.22.2'  # Dostosuj, jeśli używasz innej wersji
           channel: 'stable'
-          cache: true  # Przyspiesza budowanie przez cache'owanie zależności
+          cache: true
+
+      - name: Check current directory (debug)
+        run: pwd && ls -la
+
+      - name: Change to project directory
+        run: cd pomodoro_super_app
 
       - name: Get dependencies
         run: flutter pub get
@@ -29,6 +35,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish_dir: ./pomodoro_super_app/build/web  # Dostosuj ścieżkę do podkatalogu
           keep_files: false
           force_orphan: true
