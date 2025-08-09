@@ -1,8 +1,12 @@
-name: Deploy to GitHub Pages
+name: Deploy Flutter Web to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build_and_deploy:
@@ -15,34 +19,35 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.3' # Use a stable version; 3.32.8 seems invalid
-          channel: 'stable'
+          flutter-version: '3.22.3'
+          channel: stable
           cache: true
 
-      - name: Check current directory (debug)
-        run: pwd && ls -la
+      - name: Enable Flutter web
+        run: flutter config --enable-web
 
-      - name: Verify web/index.html
+      - name: Preheat Flutter
+        run: flutter --version
+
+      - name: Ensure web scaffolding (if missing)
+        working-directory: pomodoro_super_app
         run: |
-          cd pomodoro_super_app
-          if [ -f web/index.html ]; then
-            cat web/index.html
-          else
-            echo "Error: web/index.html not found!"
-            exit 1
+          if [ ! -f web/index.html ]; then
+            flutter create .
           fi
 
-      - name: Setup and build in project directory
-        run: |
-          cd pomodoro_super_app
-          flutter pub get
-          flutter build web --release --base-href /Form/
-        shell: bash
+      - name: Get dependencies
+        working-directory: pomodoro_super_app
+        run: flutter pub get
+
+      - name: Build web
+        working-directory: pomodoro_super_app
+        run: flutter build web --release --base-href /Form/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./pomodoro_super_app/build/web
-          keep_files: false
+          publish_dir: pomodoro_super_app/build/web
+          publish_branch: gh-pages
           force_orphan: true
