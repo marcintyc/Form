@@ -3,7 +3,7 @@ name: Deploy Flutter app to GitHub Pages
 on:
   push:
     branches:
-      - cursor/build-a-flutter-pomodoro-super-app-c404  # Zmień na branch, którego używasz (np. master)
+      - cursor/build-a-flutter-pomodoro-super-app-c404  # Upewnij się, że to poprawny branch
   workflow_dispatch:
 
 jobs:
@@ -12,13 +12,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Najnowsza wersja akcji
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x' # Upewnij się, że używasz odpowiedniej wersji Fluttera
+          flutter-version: '3.x'  # Możesz podać konkretną wersję, np. '3.22.2'
           channel: 'stable'
+          cache: true  # Przyspiesza budowanie
 
       - name: Get dependencies
         run: flutter pub get
@@ -26,8 +27,11 @@ jobs:
       - name: Build web app
         run: flutter build web --release --base-href /${{ github.event.repository.name }}/
 
+      - name: List build directory (debug)
+        run: ls -la ./build/web  # Pomaga zweryfikować, czy build się udał
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4  # Najnowsza wersja akcji
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
