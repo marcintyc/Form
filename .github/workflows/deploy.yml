@@ -22,19 +22,18 @@ jobs:
       - name: Check current directory (debug)
         run: pwd && ls -la
 
-      - name: Change to project directory
-        run: cd pomodoro_super_app
-
       - name: Get dependencies
         run: flutter pub get
+        working-directory: ./pomodoro_super_app  # Ustawienie katalogu roboczego
 
       - name: Build web app
         run: flutter build web --release --base-href /Responsive-Blog-Theme-using-Flutter/
+        working-directory: ./pomodoro_super_app  # Ustawienie katalogu roboczego
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./pomodoro_super_app/build/web  # Dostosuj ścieżkę do podkatalogu
+          publish_dir: ./pomodoro_super_app/build/web  # Ścieżka do builda w podkatalogu
           keep_files: false
           force_orphan: true
